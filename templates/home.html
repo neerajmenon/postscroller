@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-5">Yea baby ;)</h2>
+    <form method="post" action="{{ url_for('home') }}">
+        <div class="form-group">
+            <label for="subreddits" class="form-label">Enter comma-separated subreddits:</label>
+            <textarea name="subreddits" class="form-control" id="subreddits" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="num_posts" class="form-label">Number of posts to fetch:</label>
+            <input type="number" name="num_posts" class="form-control" id="num_posts" value="25" min="1" max="100">
+        </div>
+        <button type="submit" class="btn btn-primary">Fetch posts</button>
+    </form>
+    <div class="post-grid mt-5">
+        {% for post in posts %}
+        {% if (not post.is_video and post.url.endswith(('jpg', 'jpeg', 'png', 'gif'))) or (post.is_video and post.media and post.media['reddit_video']['fallback_url']) %}
+        <div class="post">
+            {% if post.is_video %}
+            <video src="{{ post.media['reddit_video']['fallback_url'] }}" controls></video>
+            {% else %}
+            <img src="{{ post.url }}" alt="{{ post.title }}">
+            {% endif %}
+            <div class="caption">{{ post.title }}</div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
